@@ -5,4 +5,5 @@ import presetCore from 'mjml-preset-core'
 assignComponents(components, presetCore.components)
 assignDependencies(dependencies, presetCore.dependencies)
 
+export { mjml2html, components }
 export default mjml2html
