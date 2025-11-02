@@ -1,0 +1,39 @@
+{
+  "name": "@n-at-han-k/mjml-browser-esm",
+  "description": "MJML browser ESM bundle - the only framework that makes responsive-email easy",
+  "version": "4.16.1",
+  "type": "module",
+  "main": "./mjml-browser.esm.js",
+  "module": "./mjml-browser.esm.js",
+  "exports": {
+    ".": {
+      "import": "./mjml-browser.esm.js",
+      "default": "./mjml-browser.esm.js"
+    }
+  },
+  "files": [
+    "mjml-browser.esm.js",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjmlio/mjml.git"
+  },
+  "keywords": [
+    "mjml",
+    "email",
+    "responsive",
+    "esm",
+    "browser",
+    "bundled"
+  ],
+  "author": "MJML",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mjmlio/mjml/issues"
+  },
+  "homepage": "https://mjml.io",
+  "publishConfig": {
+    "access": "public"
+  }
+}
