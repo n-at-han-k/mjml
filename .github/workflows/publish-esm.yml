@@ -1,0 +1,69 @@
+name: Publish ESM Package to npm
+
+on:
+  # Trigger on push to tags matching version pattern
+  push:
+    tags:
+      - 'esm-v*.*.*'
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 4.16.1)'
+        required: false
+        default: '4.16.1'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: claude/esm-module-dist-folder-011CUjDwW2mbghz2wLV93Ce7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify package files exist
+        run: |
+          if [ ! -f "dist/package.json" ]; then
+            echo "Error: dist/package.json not found"
+            exit 1
+          fi
+          if [ ! -f "dist/mjml-browser.esm.js" ]; then
+            echo "Error: dist/mjml-browser.esm.js not found"
+            exit 1
+          fi
+          echo "All required files found"
+
+      - name: Display package info
+        working-directory: ./dist
+        run: |
+          echo "Package to be published:"
+          cat package.json | grep -E '"name"|"version"'
+          echo ""
+          echo "Files to be included:"
+          npm pack --dry-run
+
+      - name: Publish to npm
+        working-directory: ./dist
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create release summary
+        run: |
+          echo "## 📦 Package Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** @n-at-han-k/mjml-browser-esm" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** $(cat dist/package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Install" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "npm install @n-at-han-k/mjml-browser-esm" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
